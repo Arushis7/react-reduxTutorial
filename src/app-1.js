@@ -1,5 +1,5 @@
 
-import {createStore, combineReducers } from 'redux';
+import {createStore,combineReducers,applyMiddleware } from 'redux';
 
 // first reducer
 
@@ -17,6 +17,8 @@ const firstReducer = (store = 0,action) =>
     {
         const subVal = store - action.data;
         return subVal;
+    }else{
+        return store
     }
 }
 
@@ -37,6 +39,8 @@ const secondReducer = (store = 0,action) =>
     {
         console.log('hey there 2nd, in SUB');
         return false;
+    }else{
+        return store;
     }
 
 }
