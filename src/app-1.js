@@ -6,10 +6,9 @@ import {createStore,combineReducers,applyMiddleware } from 'redux';
 const initalFirstReducer = {init :0};
 
 
-const firstReducer = (store = 0,action) =>
+const firstReducer = (store = initalFirstReducer.init,action) =>
 {
     if (action.type == 'ADD') {
-
         const addedVal = store + action.data;
         return addedVal;
     }
@@ -27,11 +26,24 @@ const firstReducer = (store = 0,action) =>
 
 const initalSecReducer = {init :0};
 
+function getData(dispatch){
 
-const secondReducer = (store = 0,action) =>
+    return fetch('https://jsonplaceholder.typicode.com')
+        .then(response => response.json())
+        .then(data => {
+            console.log();
+            dispatch(addition(data.userId)); // success
+        })
+        .catch(data => {
+            console.log('in error')
+            dispatch(subtraction(data.userId));
+
+        });
+}
+
+const secondReducer = (store = initalSecReducer.init,action) =>
 {
     if (action.type == 'ADD') {
-
         console.log('hey there 2nd, in ADD');
         return true;
     }
@@ -50,7 +62,15 @@ const reducers = combineReducers({
     second : secondReducer
 });
 
-const store = createStore(reducers);
+const aMiddleware = () => {
+    return (dispatch) => { // this is store's dispatch method
+        getData(dispatch);
+    }
+}
+
+const middlewares = applyMiddleware(aMiddleware);
+const store = createStore(reducers,middlewares);
+
 
 store.subscribe(()=>{
     console.log('>>>>>>>>>>>>', store.getState());
